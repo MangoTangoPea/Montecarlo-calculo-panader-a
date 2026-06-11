@@ -176,7 +176,7 @@ class MonteCarloGUI(ctk.CTk):
             segmented_button_selected_hover_color='#B2902C',
             segmented_button_unselected_color='#231B19',
             segmented_button_unselected_hover_color='#2D2320',
-            text_color='#1A1412',
+            text_color='#F4F0EA',
             text_color_disabled='#AFA196',
             border_color='#3D302C', border_width=1,
         )
@@ -189,6 +189,7 @@ class MonteCarloGUI(ctk.CTk):
         self._build_tab_principal(self.tabview.tab("Panel Principal"))
         self._build_tab_datos(self.tabview.tab("Datos Historicos"))
         self._build_tab_simulacion_inicial(self.tabview.tab("Resultados Simulación"))
+        self._decorate_tabview_buttons(self.tabview)
 
     # ── Tab 1: Panel Principal ────────────────────────────────
 
@@ -227,6 +228,23 @@ class MonteCarloGUI(ctk.CTk):
         self.plot_frame_right.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
 
         self._inicializar_graficos()
+
+    def _decorate_tabview_buttons(self, tabview):
+        button_group = tabview._segmented_button
+        original_command = button_group._command
+
+        def wrapped_command(selected_name):
+            if original_command:
+                original_command(selected_name)
+            self._refresh_segmented_button_text_colors(button_group)
+
+        button_group.configure(command=wrapped_command)
+        self._refresh_segmented_button_text_colors(button_group)
+
+    def _refresh_segmented_button_text_colors(self, button_group):
+        selected_name = button_group.get()
+        for name, button in button_group._buttons_dict.items():
+            button.configure(text_color='#1A1412' if name == selected_name else '#F4F0EA')
 
     def _kpi_card(self, master, titulo, v1, v2):
         f = ctk.CTkFrame(master, fg_color='#2D2320',

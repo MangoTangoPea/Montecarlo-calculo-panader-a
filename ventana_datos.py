@@ -47,6 +47,23 @@ class VentanaDatos(ctk.CTkFrame):
         self._build_left(left)
         self._build_right(right)
 
+    def _decorate_tabview_buttons(self, tabview):
+        button_group = tabview._segmented_button
+        original_command = button_group._command
+
+        def wrapped_command(selected_name):
+            if original_command:
+                original_command(selected_name)
+            self._refresh_segmented_button_text_colors(button_group)
+
+        button_group.configure(command=wrapped_command)
+        self._refresh_segmented_button_text_colors(button_group)
+
+    def _refresh_segmented_button_text_colors(self, button_group):
+        selected_name = button_group.get()
+        for name, button in button_group._buttons_dict.items():
+            button.configure(text_color='#1A1412' if name == selected_name else '#F4F0EA')
+
     # ── Panel izquierdo: controles + tabla ───────────────────
 
     def _build_left(self, parent):
@@ -61,7 +78,7 @@ class VentanaDatos(ctk.CTkFrame):
             segmented_button_selected_hover_color='#B2902C',
             segmented_button_unselected_color='#2D2320',
             segmented_button_unselected_hover_color='#3D302C',
-            text_color='#1A1412',
+            text_color='#F4F0EA',
             text_color_disabled='#AFA196',
         )
         self.left_tabview.grid(row=0, column=0, sticky='nsew', padx=8, pady=8)
@@ -71,6 +88,7 @@ class VentanaDatos(ctk.CTkFrame):
 
         self._build_tab_historico(tab_hist)
         self._build_tab_generador(tab_gen)
+        self._decorate_tabview_buttons(self.left_tabview)
 
     def _build_tab_historico(self, tab):
         tab.columnconfigure(0, weight=1)
