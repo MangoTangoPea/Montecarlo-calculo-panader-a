@@ -158,5 +158,4 @@ Thumbs.db
 *.swp
 *.swo
 
-# Project generated data (consumo simulado)
-consumo_historico.csv
+

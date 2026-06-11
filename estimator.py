@@ -21,10 +21,10 @@ def cargar_y_analizar_historico(ruta_csv="consumo_historico.csv"):
     # Leer el archivo CSV
     df = pd.read_csv(ruta_csv)
     
-    # Validar que la columna 'Consumo_Kg' esté presente
-    if 'Consumo_Kg' not in df.columns:
+    # Validar que las columnas obligatorias estén presentes
+    if 'Fecha' not in df.columns or 'Consumo_Kg' not in df.columns:
         raise ValueError(
-            f"El archivo CSV '{ruta_csv}' no contiene la columna obligatoria 'Consumo_Kg'."
+            f"El archivo CSV '{ruta_csv}' debe contener las columnas obligatorias 'Fecha' y 'Consumo_Kg'."
         )
         
     consumos = df['Consumo_Kg'].values
